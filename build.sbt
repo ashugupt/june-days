@@ -1,5 +1,5 @@
 maintainer     := "Ashu Gupta <ashu.a.gupta@gmail.com>"
-packageSummary := "An demo audio streaming library using concepts of Functional Programming"
+packageSummary := "An demo audio streaming library using concepts of Functional Programming."
 
 lazy val commonSettings = Seq(
   organization := "com.ashugupt.fp.june",
@@ -10,28 +10,33 @@ lazy val commonSettings = Seq(
 lazy val root = project
   .copy(id = "june")
   .in(file("."))
+  .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning)
   .settings(commonSettings: _*)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
-  .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning)
 
 lazy val core = project
   .copy(id = "june-core")
   .in(file("core"))
+  .enablePlugins(GitVersioning)
   .settings(commonSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
-  .enablePlugins(GitVersioning)
 
 lazy val api = project
   .copy(id = "june-api")
   .in(file("api"))
+  .enablePlugins(GitVersioning, BuildInfoPlugin)
   .settings(commonSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
-  .enablePlugins(GitVersioning)
+  .settings(
+    buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
+    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime),
+    buildInfoPackage := "health"
+  )
   .dependsOn(core)
 
 lazy val commonLibs = Vector(
@@ -82,9 +87,9 @@ lazy val compilationSettings = Vector(
     "-target:jvm-1.8",
     "-encoding", "UTF-8",
     "-Xfuture",
-//    "-Xfatal-warnings",
+    "-Xfatal-warnings",
     "-Xlint",
-    //  "-Ywarn-value-discard",
+    "-Ywarn-value-discard",
     "-Ywarn-dead-code",
     "-Ywarn-adapted-args"
   )
