@@ -3,11 +3,7 @@ packageSummary := "An demo audio streaming library using concepts of Functional 
 
 lazy val commonSettings = Seq(
   organization := "com.ashugupt.fp.june",
-  version      := "0.0.1-SNAPSHOT",
   scalaVersion := Version.Scala,
-
-  git.baseVersion := "0.0.0",
-  git.useGitDescribe := true,
 
   buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
   buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime),
@@ -19,6 +15,7 @@ lazy val root = project
   .in(file("."))
   .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
+  .settings(gitSettings: _*)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
 
@@ -27,8 +24,9 @@ lazy val core = project
   .in(file("core"))
   .enablePlugins(GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
-  .settings(libraryDependencies ++= commonLibs)
+  .settings(gitSettings: _*)
   .settings(compilationSettings: _*)
+  .settings(libraryDependencies ++= commonLibs)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
 
 lazy val api = project
@@ -36,8 +34,9 @@ lazy val api = project
   .in(file("api"))
   .enablePlugins(GitVersioning, BuildInfoPlugin, GitBranchPrompt)
   .settings(commonSettings: _*)
-  .settings(libraryDependencies ++= commonLibs)
+  .settings(gitSettings: _*)
   .settings(compilationSettings: _*)
+  .settings(libraryDependencies ++= commonLibs)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
   .dependsOn(core)
 
@@ -70,6 +69,20 @@ lazy val commonLibs = Vector(
   Dependencies.scalaTest,
   Dependencies.akkaTestkit,
   Dependencies.akkaMultinodeTestkit
+)
+
+val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
+
+lazy val gitSettings = Vector(
+  git.baseVersion := "0.0.0",
+  git.useGitDescribe := true,
+
+  git.gitTagToVersionNumber := {
+    case VersionRegex(v,"") => Some(v)
+    case VersionRegex(v,"SNAPSHOT") => Some(s"$v-SNAPSHOT")
+    case VersionRegex(v,s) => Some(s"$v-$s-SNAPSHOT")
+    case _ => None
+  }
 )
 
 lazy val compilationSettings = Vector(
