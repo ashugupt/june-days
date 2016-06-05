@@ -4,13 +4,20 @@ packageSummary := "An demo audio streaming library using concepts of Functional 
 lazy val commonSettings = Seq(
   organization := "com.ashugupt.fp.june",
   version      := "0.0.1-SNAPSHOT",
-  scalaVersion := Version.Scala
+  scalaVersion := Version.Scala,
+
+  git.baseVersion := "0.0.0",
+  git.useGitDescribe := true,
+
+  buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
+  buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime),
+  buildInfoPackage := "health"
 )
 
 lazy val root = project
   .copy(id = "june")
   .in(file("."))
-  .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning)
+  .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
@@ -18,7 +25,7 @@ lazy val root = project
 lazy val core = project
   .copy(id = "june-core")
   .in(file("core"))
-  .enablePlugins(GitVersioning)
+  .enablePlugins(GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(compilationSettings: _*)
@@ -27,16 +34,11 @@ lazy val core = project
 lazy val api = project
   .copy(id = "june-api")
   .in(file("api"))
-  .enablePlugins(GitVersioning, BuildInfoPlugin)
+  .enablePlugins(GitVersioning, BuildInfoPlugin, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
-  .settings(
-    buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
-    buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime),
-    buildInfoPackage := "health"
-  )
   .dependsOn(core)
 
 lazy val commonLibs = Vector(
@@ -56,6 +58,12 @@ lazy val commonLibs = Vector(
   Dependencies.akkaPersistenceQuery,
   Dependencies.akkaPersistenceTck,
   Dependencies.akkaTyped,
+
+  Dependencies.circeGeneric,
+  Dependencies.circeCore,
+  Dependencies.circeJawn,
+  Dependencies.circeParser,
+  Dependencies.circeOptics,
 
   Dependencies.junit,
   Dependencies.scalaCheck,
@@ -89,7 +97,6 @@ lazy val compilationSettings = Vector(
     "-Xfuture",
     "-Xfatal-warnings",
     "-Xlint",
-    "-Ywarn-value-discard",
     "-Ywarn-dead-code",
     "-Ywarn-adapted-args"
   )

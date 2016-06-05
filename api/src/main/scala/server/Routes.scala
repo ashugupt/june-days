@@ -21,7 +21,7 @@ import health.HealthCheck
 
 import scala.concurrent.ExecutionContext
 
-trait Routes extends HealthCheck {
+trait Routes extends RequestLoggingUtil with HealthCheck {
 
   def routes(implicit ec: ExecutionContext, mat: Materializer) =
     healthCheckRoute

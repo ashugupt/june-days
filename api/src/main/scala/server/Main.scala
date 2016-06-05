@@ -18,6 +18,7 @@ package server
 
 import java.net.InetAddress
 
+import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import core.CoreImpl
@@ -37,8 +38,10 @@ object Main extends App with Routes {
     val server = InetAddress.getLocalHost.getHostName
     val port = 8080
 
+    val customLoggedRoute = logRequestResult(Logging.InfoLevel, routes)
+
     log.info(s"Starting the server {} at port {} on server", server, port)
-    val binding = Http().bindAndHandle(handler = routes, interface = "0.0.0.0", port = port)
+    val binding = Http().bindAndHandle(handler = customLoggedRoute, interface = "0.0.0.0", port = port)
 
     binding onFailure {
       case ex: Exception ⇒
