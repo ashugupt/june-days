@@ -1,13 +1,17 @@
-maintainer     := "Ashu Gupta <ashu.a.gupta@gmail.com>"
+maintainer := "Ashu Gupta <ashu.a.gupta@gmail.com>"
 packageSummary := "An demo audio streaming library using concepts of Functional Programming."
+
+import com.typesafe.sbt.packager.SettingsHelper._
 
 lazy val commonSettings = Seq(
   organization := "com.ashugupt.fp.june",
   scalaVersion := Version.Scala,
 
-  buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
+  buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, buildInfoBuildNumber),
   buildInfoOptions := Seq[BuildInfoOption](BuildInfoOption.BuildTime),
-  buildInfoPackage := "health"
+  buildInfoPackage := "health",
+
+  publishTo := Some("temp" at "file:///tmp/repository")
 )
 
 lazy val root = project
@@ -16,15 +20,17 @@ lazy val root = project
   .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(gitSettings: _*)
+  .settings(makeDeploymentSettings(Universal, packageBin in Universal, "zip"): _*)
   .settings(compilationSettings: _*)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
 
 lazy val core = project
   .copy(id = "june-core")
   .in(file("core"))
-  .enablePlugins(GitVersioning, GitBranchPrompt)
+  .enablePlugins(JavaAppPackaging, BuildInfoPlugin, GitVersioning, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(gitSettings: _*)
+  .settings(makeDeploymentSettings(Universal, packageBin in Universal, "zip"): _*)
   .settings(compilationSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
@@ -32,9 +38,10 @@ lazy val core = project
 lazy val api = project
   .copy(id = "june-api")
   .in(file("api"))
-  .enablePlugins(GitVersioning, BuildInfoPlugin, GitBranchPrompt)
+  .enablePlugins(JavaAppPackaging, GitVersioning, BuildInfoPlugin, GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(gitSettings: _*)
+  .settings(makeDeploymentSettings(Universal, packageBin in Universal, "zip"): _*)
   .settings(compilationSettings: _*)
   .settings(libraryDependencies ++= commonLibs)
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
@@ -78,9 +85,9 @@ lazy val gitSettings = Vector(
   git.useGitDescribe := true,
 
   git.gitTagToVersionNumber := {
-    case VersionRegex(v,"") => Some(v)
-    case VersionRegex(v,"SNAPSHOT") => Some(s"$v-SNAPSHOT")
-    case VersionRegex(v,s) => Some(s"$v-$s-SNAPSHOT")
+    case VersionRegex(v, "") => Some(v)
+    case VersionRegex(v, "SNAPSHOT") => Some(s"$v-SNAPSHOT")
+    case VersionRegex(v, s) => Some(s"$v-$s-SNAPSHOT")
     case _ => None
   }
 )

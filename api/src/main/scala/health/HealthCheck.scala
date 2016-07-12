@@ -75,6 +75,7 @@ trait HealthCheck {
         (get | post | parameter('method ! "POST") | put) {
           pathEndOrSingleSlash {
             complete {
+              println("Hello")
               healthPacket
             }
           }
