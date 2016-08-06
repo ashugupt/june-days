@@ -22,6 +22,8 @@ object Version {
   final val slf4j                             = "1.7.21"
   final val logback                           = "1.1.7"
 
+  final val shapelessV                         = "2.3.1"
+
   final val cats                              = "0.6.1"
 
   final val circe                             = "0.5.0-M2"
@@ -37,6 +39,11 @@ object Version {
   final val slick                             = "3.2.0-M1"
   final val slickPg                           = "0.15.0-M1"
 
+  final val h2                                = "1.4.192"
+
+  final val quillCassandraV                   = "0.8.0"
+  final val sparkCassandraConnector           = "1.6.0"
+
   final val junitVer                          = "4.12"
   final val scalaTestVer                      = "3.0.0-RC4"
   final val scalaCheckVer                     = "1.13.2"
@@ -50,11 +57,14 @@ object Dependencies {
   val slf4jApi             = "org.slf4j"               %  "slf4j-api"                           % slf4j
   val logbackApi           = "ch.qos.logback"          %  "logback-classic"                     % logback
 
+  ////////////////// Shapeless
+  val shapeless            = "com.chuusai"             %% "shapeless"                           % shapelessV withSources() withJavadoc()
+
   /////////////////// Cats
-  val catsMacros           = "org.typelevel"           %% "cats-macros"                         % cats
-  val catsKernel           = "org.typelevel"           %% "cats-kernel"                         % cats
-  val catsCore             = "org.typelevel"           %% "cats-core"                           % cats
-  val catsFree             = "org.typelevel"           %% "cats-free"                           % cats
+  val catsMacros           = "org.typelevel"           %% "cats-macros"                         % cats       withSources() withJavadoc()
+  val catsKernel           = "org.typelevel"           %% "cats-kernel"                         % cats       withSources() withJavadoc()
+  val catsCore             = "org.typelevel"           %% "cats-core"                           % cats       withSources() withJavadoc()
+  val catsFree             = "org.typelevel"           %% "cats-free"                           % cats       withSources() withJavadoc()
 
   /////////////////// Akka
   val akkaActor            = "com.typesafe.akka"       %% "akka-actor"                          % akka
@@ -79,15 +89,19 @@ object Dependencies {
   val scalaTags            = "com.lihaoyi"             %% "scalatags"                           % htmlTags
 
   //////////////////// Circe
-  val circeCore            = "io.circe"                %% "circe-core"                          % circe
-  val circeJawn            = "io.circe"                %% "circe-jawn"                          % circe
-  val circeGeneric         = "io.circe"                %% "circe-generic"                       % circe
-  val circeParser          = "io.circe"                %% "circe-parser"                        % circe
-  val circeOptics          = "io.circe"                %% "circe-java8"                         % circe
-  val circeJava8           = "io.circe"                %% "circe-optics"                        % circe
+  val circeCore            = "io.circe"                %% "circe-core"                          % circe       withSources() withJavadoc()
+  val circeJawn            = "io.circe"                %% "circe-jawn"                          % circe       withSources() withJavadoc()
+  val circeGeneric         = "io.circe"                %% "circe-generic"                       % circe       withSources() withJavadoc()
+  val circeParser          = "io.circe"                %% "circe-parser"                        % circe       withSources() withJavadoc()
+  val circeJava8           = "io.circe"                %% "circe-java8"                         % circe       withSources() withJavadoc()
+  val circeOptics          = "io.circe"                %% "circe-optics"                        % circe       withSources() withJavadoc()
 
   //////////////////// Akka-http-circe
   val akkaHttpCirce        = "de.heikoseeberger"       %% "akka-http-circe"                     % akkaHttpJson
+
+  /////////////////// Spark-cassandra
+  val sparkCassandra       = "com.datastax.spark"      %% "spark-cassandra-connector"           % sparkCassandraConnector
+  val quillCassandra       = "io.getquill"             %% "quill-cassandra"                     % quillCassandraV
 
   //////////////////// Postgresql
   val postgres             = "org.postgresql"          %  "postgresql"                          % postgresql
@@ -112,4 +126,6 @@ object Dependencies {
   val akkaStreamTestkit    = "com.typesafe.akka"       %% "akka-stream-testkit"                % akka                % "test"
   val akkaHttpTestkit      = "com.typesafe.akka"       %% "akka-http-testkit"                  % akka                % "test"
   val slickTestkit         = "com.typesafe.slick"      %% "slick-testkit"                      % slick               % "test"
+
+  val h2Db                 = "com.h2database"          %  "h2"                                 % h2                  % "test"
 }

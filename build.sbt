@@ -47,9 +47,21 @@ lazy val api = project
   .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
   .dependsOn(core)
 
+lazy val spark = project
+  .copy(id = "june-spark")
+  .enablePlugins(JavaAppPackaging, GitVersioning, BuildInfoPlugin, GitBranchPrompt)
+  .settings(commonSettings: _*)
+  .settings(gitSettings: _*)
+  .settings(makeDeploymentSettings(Universal, packageBin in Universal, "zip"): _*)
+  .settings(compilationSettings: _*)
+  .settings(libraryDependencies ++= commonLibs)
+  .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings)
+
 lazy val commonLibs = Vector(
   Dependencies.slf4jApi,
   Dependencies.logbackApi,
+
+  Dependencies.shapeless,
 
   Dependencies.catsCore,
   Dependencies.catsFree,
@@ -70,6 +82,7 @@ lazy val commonLibs = Vector(
   Dependencies.circeJawn,
   Dependencies.circeParser,
   Dependencies.circeOptics,
+  Dependencies.circeJava8,
 
   Dependencies.junit,
   Dependencies.scalaCheck,
@@ -115,7 +128,7 @@ lazy val compilationSettings = Vector(
     "-target:jvm-1.8",
     "-encoding", "UTF-8",
     "-Xfuture",
-    "-Xfatal-warnings",
+//    "-Xfatal-warnings",
     "-Xlint",
     "-Ywarn-dead-code",
     "-Ywarn-adapted-args"
