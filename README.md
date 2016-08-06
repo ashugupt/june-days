@@ -1,5 +1,5 @@
 # june-days
-A learning foray into FP and Cats by creating a audio streaming service
+A learning foray into FP and Cats
 
 ## Current
 As of now, this repo only contains a multi module build using sbt.
